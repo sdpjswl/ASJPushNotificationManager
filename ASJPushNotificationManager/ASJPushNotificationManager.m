@@ -43,6 +43,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 - (void)handleDeviceTokenError:(NSNotification *)note;
 - (void)handleDeviceTokenReceived:(NSNotification *)note;
 - (void)handlePushReceived:(NSNotification *)note;
+- (void)stopListeningForAppDelegateNotifications;
 
 @end
 
@@ -188,20 +189,12 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 
 - (void)handleRegisteredSettings:(NSNotification *)note
 {
-  // stop observing private notification
-  [self.notificationCenter removeObserver:self name:ASJUserNotificationSettingsNotificationPrivate object:nil];
-  
-  // send out public notification
   UIUserNotificationSettings *userSettings = (UIUserNotificationSettings *)note.object;
   [self.notificationCenter postNotificationName:ASJUserNotificationSettingsNotification object:userSettings];
 }
 
 - (void)handleDeviceTokenError:(NSNotification *)note
 {
-  // stop observing private notification
-  [self.notificationCenter removeObserver:self name:ASJTokenErrorNotificationPrivate object:nil];
-  
-  // send out public notification
   NSError *error = (NSError *)note.object;
   [self.notificationCenter postNotificationName:ASJTokenErrorNotification object:error];
   
@@ -213,9 +206,6 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 
 - (void)handleDeviceTokenReceived:(NSNotification *)note
 {
-  // stop observing private notification
-  [self.notificationCenter removeObserver:self name:ASJTokenReceivedNotificationPrivate object:nil];
-  
   // convert device token data to string
   NSData *data = (NSData *)note.object;
   self.deviceToken = [ASJPushNotificationManager deviceTokenStringFromData:data];
@@ -254,6 +244,20 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     [self.application performSelector:unregister withObject:nil];
   }
 #pragma clang diagnostic pop
+  
+  // remove registered observers
+  [self stopListeningForAppDelegateNotifications];
+}
+
+- (void)stopListeningForAppDelegateNotifications
+{
+  [self.notificationCenter removeObserver:self name:ASJUserNotificationSettingsNotificationPrivate object:nil];
+  
+  [self.notificationCenter removeObserver:self name:ASJTokenErrorNotificationPrivate object:nil];
+  
+  [self.notificationCenter removeObserver:self name:ASJTokenReceivedNotificationPrivate object:nil];
+  
+  [self.notificationCenter removeObserver:self name:ASJPushReceivedNotificationPrivate object:nil];
 }
 
 #pragma mark - Property
