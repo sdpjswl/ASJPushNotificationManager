@@ -178,9 +178,9 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
   if (self.isiOS8OrAbove)
   {
     [self.application registerUserNotificationSettings:self.iOS8NotificationSettings];
-    [self.application registerForRemoteNotifications];
   }
-  else {
+  else
+  {
     [self.application registerForRemoteNotificationTypes:self.iOS7NotificationTypes];
   }
 }
@@ -189,6 +189,9 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 
 - (void)handleRegisteredSettings:(NSNotification *)note
 {
+  // register for push
+  [self.application registerForRemoteNotifications];
+  
   UIUserNotificationSettings *userSettings = (UIUserNotificationSettings *)note.object;
   [self.notificationCenter postNotificationName:ASJUserNotificationSettingsNotification object:userSettings];
 }

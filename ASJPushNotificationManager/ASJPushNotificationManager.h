@@ -77,20 +77,28 @@ extern NSString *const ASJPushReceivedNotification;
 
 NS_ASSUME_NONNULL_END
 
-// http://stackoverflow.com/questions/26258071/how-to-override-swizzle-a-method-of-a-private-class-in-runtime-objective-c
-
-// http://stackoverflow.com/questions/22361427/how-to-swizzle-a-method-of-a-private-class
-
-// https://www.google.co.in/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=swizzle%20method%20from%20one%20class%20to%20other
-
-// http://stackoverflow.com/questions/20483159/can-you-swizzle-applicationdidreceiveremotenotification/33493541#33493541
-
-// http://stackoverflow.com/questions/22085234/didreceiveremotenotification-fetchcompletionhandler-open-from-icon-vs-push-not
-
-// http://stackoverflow.com/questions/29869352/ios-8-push-notification-action-buttons-code-in-handleactionwithidentifier-does
-
-// http://stackoverflow.com/questions/9530075/ios-access-app-info-plist-variables-in-code
-
-// https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIApplication_Class/index.html#//apple_ref/occ/instm/UIApplication/unregisterForRemoteNotifications
-
-
+/*
+ http://stackoverflow.com/questions/29869352/ios-8-push-notification-action-buttons-code-in-handleactionwithidentifier-does
+ 
+ UIMutableUserNotificationAction *acceptAction = [[UIMutableUserNotificationAction alloc] init];
+ [acceptAction setActivationMode:UIUserNotificationActivationModeBackground];
+ [acceptAction setTitle:@"Accept"];
+ [acceptAction setIdentifier:@"ACCEPT_ACTION"];
+ [acceptAction setDestructive:NO];
+ [acceptAction setAuthenticationRequired:NO];
+ 
+ UIMutableUserNotificationAction *denyAction = [[UIMutableUserNotificationAction alloc] init];
+ [denyAction setActivationMode:UIUserNotificationActivationModeBackground];
+ [denyAction setTitle:@"Deny"];
+ [denyAction setIdentifier:@"DENY_ACTION"];
+ [denyAction setDestructive:NO];
+ [denyAction setAuthenticationRequired:NO];
+ 
+ UIMutableUserNotificationCategory *actionCategory = [[UIMutableUserNotificationCategory alloc] init];
+ [actionCategory setIdentifier:@"ACTIONABLE"];
+ [actionCategory setActions:@[acceptAction, denyAction]
+ forContext:UIUserNotificationActionContextDefault];
+ 
+ NSSet *categories = [NSSet setWithObject:actionCategory];
+ 
+ */

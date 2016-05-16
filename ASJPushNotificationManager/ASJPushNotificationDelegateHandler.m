@@ -66,12 +66,23 @@ NSString *const ASJPushReceivedNotificationPrivate = @"asj_push_received_notific
 {
   completionHandler(UIBackgroundFetchResultNewData);
   
+  // appending application state to "userInfo"
+  NSMutableDictionary *temp = [[NSMutableDictionary alloc] initWithDictionary:userInfo];
+  [temp setObject:@(application.applicationState) forKey:@"applicationState"];
+  userInfo = [NSDictionary dictionaryWithDictionary:temp];
+  
   [[NSNotificationCenter defaultCenter] postNotificationName:ASJPushReceivedNotificationPrivate object:userInfo];
 }
 
+
+//- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler
+//{
+//  
+//}
+
 /*
  
- - (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler NS_AVAILABLE_IOS(8_0);
+  NS_AVAILABLE_IOS(8_0);
  
  - (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void(^)())completionHandler NS_AVAILABLE_IOS(9_0);
  */
