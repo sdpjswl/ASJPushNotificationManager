@@ -32,7 +32,8 @@
   if (canCheckForRegister) {
     return self.application.isRegisteredForRemoteNotifications;
   }
-  return NO;
+  
+  return (self.application.enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone);
 }
 
 - (BOOL)isiOS8OrAbove
@@ -48,17 +49,6 @@
 - (NSNotificationCenter *)notificationCenter
 {
   return [NSNotificationCenter defaultCenter];
-}
-
-- (UIRemoteNotificationType)iOS7NotificationTypes
-{
-  return UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound;
-}
-
-- (UIUserNotificationSettings *)iOS8NotificationSettings
-{
-  UIUserNotificationType types = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
-  return [UIUserNotificationSettings settingsForTypes:types categories:nil];
 }
 
 - (NSUserDefaults *)userDefaults

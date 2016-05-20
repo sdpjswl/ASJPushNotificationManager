@@ -23,7 +23,6 @@
 
 #import "ASJPushNotificationManager.h"
 #import <UIKit/UIApplication.h>
-#import <UIKit/UIUserNotificationSettings.h>
 
 @interface ASJPushNotificationManager (Utils)
 
@@ -53,17 +52,7 @@
 @property (readonly, weak, nonatomic) NSUserDefaults *userDefaults;
 
 /**
- *  All notification types  supported till iOS 7. Deprecated from iOS 8.0.
- */
-@property (readonly, nonatomic) UIRemoteNotificationType iOS7NotificationTypes;
-
-/**
- *  All notification settings from iOS 8.0. Replaces remote notification settings from iOS 7.
- */
-@property (readonly, weak, nonatomic) UIUserNotificationSettings *iOS8NotificationSettings;
-
-/**
- *  Device token is received as binary "NSData". This is a helper method to convert it into a usable "NSString".
+ *  Device token is received as binary "NSData". This is a helper method to convert it into a usable "NSString" so that it can be sent to server.
  *
  *  @param data The device token "NSData".
  *

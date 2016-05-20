@@ -23,6 +23,13 @@
 
 #import <Foundation/NSString.h>
 
+typedef NS_ENUM(NSUInteger, ASJPushNotificationType) {
+  ASJPushNotificationTypeNone = 0,
+  ASJPushNotificationTypeBadge = 1 << 0,
+  ASJPushNotificationTypeSound = 1 << 1,
+  ASJPushNotificationTypeAlert
+};
+
 NS_ASSUME_NONNULL_BEGIN
 
 typedef void(^CompletionBlock)(NSString * _Nullable deviceToken, NSError * _Nullable error);
@@ -46,7 +53,7 @@ typedef void(^CompletionBlock)(NSString * _Nullable deviceToken, NSError * _Null
  *
  *  @param completion A block containing the device token and error. Both may be nil in different situations. You can access the device token at any time using the "deviceToken" property.
  */
-- (void)registerWithCompletion:(nullable CompletionBlock)completion;
+- (void)registerWithTypes:(ASJPushNotificationType)type completion:(nullable CompletionBlock)completion;
 
 /**
  *  Unregister for remote notifications. You will stop seeing notifications in app after this. You can always re-register later.
@@ -79,6 +86,7 @@ NS_ASSUME_NONNULL_END
 
 /*
  http://stackoverflow.com/questions/29869352/ios-8-push-notification-action-buttons-code-in-handleactionwithidentifier-does
+ https://nrj.io/simple-interactive-notifications-in-ios-8/
  
  UIMutableUserNotificationAction *acceptAction = [[UIMutableUserNotificationAction alloc] init];
  [acceptAction setActivationMode:UIUserNotificationActivationModeBackground];

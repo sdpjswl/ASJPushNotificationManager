@@ -24,6 +24,7 @@
 #import "ASJPushNotificationDelegateHandler.h"
 #import "ASJPushNotificationManager+Utils.h"
 #import <objc/runtime.h>
+#import <UIKit/UIUserNotificationSettings.h>
 
 NSString *const kDeviceTokenDefaultsKey = @"asj_device_token";
 NSString *const ASJUserNotificationSettingsNotification = @"asj_user_notification_settings_notification";
@@ -38,7 +39,6 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 @property (copy) CompletionBlock callback;
 
 - (void)startListeningForAppDelegateNotifications;
-- (void)registerForAlliOSDevices;
 - (void)handleRegisteredSettings:(NSNotification *)note;
 - (void)handleDeviceTokenError:(NSNotification *)note;
 - (void)handleDeviceTokenReceived:(NSNotification *)note;
@@ -140,7 +140,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 
 #pragma mark - Register
 
-- (void)registerWithCompletion:(CompletionBlock)completion
+- (void)registerWithTypes:(ASJPushNotificationType)types completion:(CompletionBlock)completion
 {
   _callback = completion;
   
@@ -153,13 +153,21 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     return;
   }
   
-  // start observing custom notifications which will be posted from delegate methods
-  // after swizzling, the delegate methods are part of the perveived "AppDelegate" class
-  // and not the current class, so we need a way to pass data from there to here
+  // start observing custom notifications which will be posted from delegate methods. after swizzling, the delegate methods are part of the perceived "AppDelegate" class and not the current class, so we need a way to pass data from there to here
   [self startListeningForAppDelegateNotifications];
   
   // different way to register in iOS 7, changed from iOS 8
-  [self registerForAlliOSDevices];
+  if (self.isiOS8OrAbove)
+  {
+    UIUserNotificationType notificationTypes = (UIUserNotificationType)types;
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:nil];
+    [self.application registerUserNotificationSettings:settings];
+  }
+  else
+  {
+    UIRemoteNotificationType notificationTypes = (UIRemoteNotificationType)types;
+    [self.application registerForRemoteNotificationTypes:notificationTypes];
+  }
 }
 
 - (void)startListeningForAppDelegateNotifications
@@ -171,18 +179,6 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
   [self.notificationCenter addObserver:self selector:@selector(handleDeviceTokenReceived:) name:ASJTokenReceivedNotificationPrivate object:nil];
   
   [self.notificationCenter addObserver:self selector:@selector(handlePushReceived:) name:ASJPushReceivedNotificationPrivate object:nil];
-}
-
-- (void)registerForAlliOSDevices
-{
-  if (self.isiOS8OrAbove)
-  {
-    [self.application registerUserNotificationSettings:self.iOS8NotificationSettings];
-  }
-  else
-  {
-    [self.application registerForRemoteNotificationTypes:self.iOS7NotificationTypes];
-  }
 }
 
 #pragma mark - Notifications handling
@@ -203,7 +199,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
   
   // token and error are also sent via block
   if (_callback) {
-    _callback(nil,error);
+    _callback(nil, error);
   }
 }
 
@@ -263,7 +259,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
   [self.notificationCenter removeObserver:self name:ASJPushReceivedNotificationPrivate object:nil];
 }
 
-#pragma mark - Property
+#pragma mark - Device token
 
 - (void)setDeviceToken:(NSString *)deviceToken
 {
