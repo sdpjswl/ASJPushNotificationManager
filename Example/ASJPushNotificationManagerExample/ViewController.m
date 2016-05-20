@@ -70,7 +70,9 @@
 
 - (IBAction)registerForPushNotifcations:(id)sender
 {
-  [self.pushNotificationManager registerWithCompletion:^(NSString *deviceToken, NSError *error)
+  ASJPushNotificationType types = ASJPushNotificationTypeAlert | ASJPushNotificationTypeBadge | ASJPushNotificationTypeSound;
+  
+  [self.pushNotificationManager registerWithTypes:types completion:^(NSString * _Nullable deviceToken, NSError * _Nullable error)
    {
      NSString *text = nil;
      if (deviceToken.length) {
