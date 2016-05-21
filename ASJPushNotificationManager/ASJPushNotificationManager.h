@@ -53,7 +53,7 @@ typedef void(^CompletionBlock)(NSString * _Nullable deviceToken, NSError * _Null
  *
  *  @param completion A block containing the device token and error. Both may be nil in different situations. You can access the device token at any time using the "deviceToken" property.
  */
-- (void)registerWithTypes:(ASJPushNotificationType)type completion:(nullable CompletionBlock)completion;
+- (void)registerWithTypes:(ASJPushNotificationType)types completion:(nullable CompletionBlock)completion;
 
 /**
  *  Unregister for remote notifications. You will stop seeing notifications in app after this. You can always re-register later.
@@ -85,7 +85,13 @@ extern NSString *const ASJPushReceivedNotification;
 NS_ASSUME_NONNULL_END
 
 /*
+ thought: how about passing the method signature/invocation or something frm swizzled delegate method?
+ then, hw about passing this to user and making sure completion is called?
+ 
  http://stackoverflow.com/questions/29869352/ios-8-push-notification-action-buttons-code-in-handleactionwithidentifier-does
+ 
+ https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/IPhoneOSClientImp.html
+ 
  https://nrj.io/simple-interactive-notifications-in-ios-8/
  
  UIMutableUserNotificationAction *acceptAction = [[UIMutableUserNotificationAction alloc] init];

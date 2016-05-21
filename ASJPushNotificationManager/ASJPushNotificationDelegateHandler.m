@@ -64,20 +64,20 @@ NSString *const ASJPushReceivedNotificationPrivate = @"asj_push_received_notific
 // rec'd push (block)
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-  completionHandler(UIBackgroundFetchResultNewData);
-  
   // appending application state to "userInfo"
   NSMutableDictionary *temp = [[NSMutableDictionary alloc] initWithDictionary:userInfo];
   [temp setObject:@(application.applicationState) forKey:@"applicationState"];
   userInfo = [NSDictionary dictionaryWithDictionary:temp];
   
   [[NSNotificationCenter defaultCenter] postNotificationName:ASJPushReceivedNotificationPrivate object:userInfo];
+  
+  // necessary to call block
+  completionHandler(UIBackgroundFetchResultNewData);
 }
-
 
 //- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler
 //{
-//  
+//
 //}
 
 /*
