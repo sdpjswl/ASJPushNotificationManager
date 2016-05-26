@@ -14,63 +14,79 @@ pod 'ASJPushNotificationManager'
 
 # Usage
 
-You need to import `ASJPushNotificationManager.h` in the class where you need to ask the user permission to send them pushes. This class is a singleton and you are required to use its shared instance to access the defined properties and methods:
+You need to import `ASJPushNotificationManager.h` in the class where you need to ask the user permission to send them pushes. 
 
 ```objc
 + (instancetype)sharedInstance;
 ```
-
-To register the device to receive push notifications, call:
+This class is a singleton and you are required to use its shared instance to access the defined properties and methods.
 
 ```objc
-- (void)registerWithCompletion:(NSString * _Nullable deviceToken, NSError * _Nullable error)completion;
+- (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UIUserNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion;
 ```
+Call this method to invoke the registration flow. When called for the first time, it will prompt the user that the app would like to send push notifications. The completion block will fire after the user makes a choice, and you will receive the device token or error object.
 
-When executed for the first time, it will prompt the user that the app would like to send push notifications. Depending on whether use allows or doesn't, the completion block will fire and you will receive the device token or error object.
-
-The default delegate method `application:didRegisterForRemoteNotificationsWithDeviceToken:` returns the device token as `NSData`. It is converted into a usable `NSString` before you receive it in the block. You can pass this string on to your server like always.
-
-The generated device token is always available for use as an exposed property:
+The default delegate method `application:didRegisterForRemoteNotificationsWithDeviceToken:` returns the device token as `NSData`. It is converted into a usable `NSString` before you receive it in the block. You can pass this string on to your server like always. **Note** that you will **not** get a token on simulator.
 
 ```objc
 @property (nullable, readonly, copy, nonatomic) NSString *deviceToken;
 ```
-
-Note that it can be `nil`, in case user did not allow receiving push notifications.
-
-If you want to stop receiving pushes in app, you can unregister:
+The generated device token is always available for use as an exposed property. Note that it can be `nil`, in case user did not allow receiving push notifications.
 
 ```objc
 - (void)unregister;
 ```
+To stop receiving pushes in app, you can unregister.
 
 ### Handling push events
 
-All the usual delegate methods are abstracted away and **will not** be called even if you write them in `AppDelegate`. You will need to observe `NSNotification`s for the different events you are interested in. Just be sure to remove your observers in `dealloc`:
+Most of the delegate methods are abstracted away and **will not** be called even if you write them in `AppDelegate` (See below). You will need to observe `NSNotification`s for the different events you are interested in. Just be sure to remove your observers in `dealloc`:
 
 ```objc
 extern NSString *const ASJUserNotificationSettingsNotification;
 ```
-
 Posted when `application:didRegisterUserNotificationSettings:` is called.
 
 ```objc
 extern NSString *const ASJTokenErrorNotification;
 ```
-
 Notification posted when `application:didFailToRegisterForRemoteNotificationsWithError:` is called.
 
 ```objc
 extern NSString *const ASJTokenReceivedNotification;
 ```
-
 Notification posted when `application:didRegisterForRemoteNotificationsWithDeviceToken:` is called.
 
 ```objc
 extern NSString *const ASJPushReceivedNotification;
 ```
+Notification posted when `application:didReceiveRemoteNotification:` is called.
 
-Notification posted when `application:didReceiveRemoteNotification:` or `application:didReceiveRemoteNotification:fetchCompletionHandler:` is called.
+### Limitations
+
+I have used the notifications pattern so that the user could receive pushes in any `ViewController`, hoping it would be easier that way. However, I have been unable to make the methods with `completionHandler:` blocks work to my satisfaction. So for now, they will be called in `AppDelegate`. You **must** call the `completionHandler:` in these methods for them to work:
+
+**Called** in `AppDelegate`
+
+```objc
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler;
+
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler;
+
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void(^)())completionHandler;
+```
+
+**Not called** in `AppDelegate`
+
+```objc
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo;
+```
 
 # Credits
 
