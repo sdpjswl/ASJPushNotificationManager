@@ -1,0 +1,76 @@
+selectors:
+
+[selectors addObject:@"application:handleActionWithIdentifier:forRemoteNotification:completionHandler:"];
+[selectors addObject:@"application:handleActionWithIdentifier:forRemoteNotification:withResponseInfo:completionHandler:"];
+
+// this one requires remote notification capability in info.plist
+  NSArray *backgroundModes = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIBackgroundModes"];
+  if ([backgroundModes containsObject:@"remote-notification"])
+  {
+    [selectors addObject:@"application:didReceiveRemoteNotification:fetchCompletionHandler:"];
+  }
+
+  // delegate.m
+
+
+
+// rec'd push (block)
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+  // appending application state to "userInfo"
+  NSMutableDictionary *temp = [[NSMutableDictionary alloc] initWithDictionary:userInfo];
+  [temp setObject:@(application.applicationState) forKey:@"applicationState"];
+  userInfo = [NSDictionary dictionaryWithDictionary:temp];
+  
+  [[NSNotificationCenter defaultCenter] postNotificationName:ASJPushReceivedNotificationPrivate object:userInfo];
+  
+  // necessary to call block
+  completionHandler(UIBackgroundFetchResultNewData);
+}
+
+//- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler
+//{
+//
+//}
+
+/*
+ 
+  NS_AVAILABLE_IOS(8_0);
+ 
+ - (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void(^)())completionHandler NS_AVAILABLE_IOS(9_0);
+ */
+
+ // resources
+ 
+ /*
+ thought: how about passing the method signature/invocation or something frm swizzled delegate method?
+ then, hw about passing this to user and making sure completion is called?
+ 
+ http://stackoverflow.com/questions/29869352/ios-8-push-notification-action-buttons-code-in-handleactionwithidentifier-does
+ 
+ https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/IPhoneOSClientImp.html
+ 
+ https://nrj.io/simple-interactive-notifications-in-ios-8/
+ 
+ UIMutableUserNotificationAction *acceptAction = [[UIMutableUserNotificationAction alloc] init];
+ [acceptAction setActivationMode:UIUserNotificationActivationModeBackground];
+ [acceptAction setTitle:@"Accept"];
+ [acceptAction setIdentifier:@"ACCEPT_ACTION"];
+ [acceptAction setDestructive:NO];
+ [acceptAction setAuthenticationRequired:NO];
+ 
+ UIMutableUserNotificationAction *denyAction = [[UIMutableUserNotificationAction alloc] init];
+ [denyAction setActivationMode:UIUserNotificationActivationModeBackground];
+ [denyAction setTitle:@"Deny"];
+ [denyAction setIdentifier:@"DENY_ACTION"];
+ [denyAction setDestructive:NO];
+ [denyAction setAuthenticationRequired:NO];
+ 
+ UIMutableUserNotificationCategory *actionCategory = [[UIMutableUserNotificationCategory alloc] init];
+ [actionCategory setIdentifier:@"ACTIONABLE"];
+ [actionCategory setActions:@[acceptAction, denyAction]
+ forContext:UIUserNotificationActionContextDefault];
+ 
+ NSSet *categories = [NSSet setWithObject:actionCategory];
+ 
+ */
