@@ -21,8 +21,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import "ASJPushNotificationUtils.h"
 #import "ASJPushNotificationDelegate.h"
-#import "ASJPushNotificationManager+Utils.h"
 #import <objc/runtime.h>
 
 NSString *const kDeviceTokenDefaultsKey = @"asj_device_token";

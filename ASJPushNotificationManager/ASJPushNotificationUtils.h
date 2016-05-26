@@ -1,5 +1,5 @@
 //
-// ASJPushNotificationManager+Utils.h
+// ASJPushNotificationUtils.h
 //
 // Copyright (c) 2016 Sudeep Jaiswal
 //

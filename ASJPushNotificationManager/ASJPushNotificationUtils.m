@@ -1,5 +1,5 @@
 //
-// ASJPushNotificationManager+Utils.m
+// ASJPushNotificationUtils.m
 //
 // Copyright (c) 2016 Sudeep Jaiswal
 //
@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "ASJPushNotificationManager+Utils.h"
+#import "ASJPushNotificationUtils.h"
 
 @implementation ASJPushNotificationManager (Utils)
 
