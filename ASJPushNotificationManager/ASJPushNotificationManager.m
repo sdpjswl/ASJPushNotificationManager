@@ -21,10 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "ASJPushNotificationDelegateHandler.h"
+#import "ASJPushNotificationDelegate.h"
 #import "ASJPushNotificationManager+Utils.h"
 #import <objc/runtime.h>
-#import <UIKit/UIUserNotificationSettings.h>
 
 NSString *const kDeviceTokenDefaultsKey = @"asj_device_token";
 NSString *const ASJUserNotificationSettingsNotification = @"asj_user_notification_settings_notification";
@@ -56,7 +55,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^ {
     
-    Class class = [ASJPushNotificationDelegateHandler class];
+    Class class = [ASJPushNotificationDelegate class];
     Class appDelegateClass = [self appDelegateClass];
     
     for (NSString *selectorString in [self selectorsToSwizzle])
@@ -95,7 +94,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     }
     
     // ignore delegate handler class for adopting "UIApplicationDelegate" protocol
-    if ([NSStringFromClass(class) isEqualToString:NSStringFromClass([ASJPushNotificationDelegateHandler class])]) {
+    if ([NSStringFromClass(class) isEqualToString:NSStringFromClass([ASJPushNotificationDelegate class])]) {
       continue;
     }
     
@@ -113,16 +112,6 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
   [selectors addObject:@"application:didFailToRegisterForRemoteNotificationsWithError:"];
   [selectors addObject:@"application:didRegisterForRemoteNotificationsWithDeviceToken:"];
   [selectors addObject:@"application:didReceiveRemoteNotification:"];
-  [selectors addObject:@"application:handleActionWithIdentifier:forRemoteNotification:completionHandler:"];
-  [selectors addObject:@"application:handleActionWithIdentifier:forRemoteNotification:withResponseInfo:completionHandler:"];
-  
-  // this one requires remote notification capability in info.plist
-  NSArray *backgroundModes = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"UIBackgroundModes"];
-  if ([backgroundModes containsObject:@"remote-notification"])
-  {
-    [selectors addObject:@"application:didReceiveRemoteNotification:fetchCompletionHandler:"];
-  }
-  
   return [NSArray arrayWithArray:selectors];
 }
 
@@ -140,7 +129,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 
 #pragma mark - Register
 
-- (void)registerWithTypes:(ASJPushNotificationType)types completion:(CompletionBlock)completion
+- (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UIUserNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion
 {
   _callback = completion;
   
@@ -160,7 +149,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
   if (self.isiOS8OrAbove)
   {
     UIUserNotificationType notificationTypes = (UIUserNotificationType)types;
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:nil];
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:categories];
     [self.application registerUserNotificationSettings:settings];
   }
   else
