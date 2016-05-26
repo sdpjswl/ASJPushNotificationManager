@@ -52,25 +52,4 @@ selectors:
  
  https://nrj.io/simple-interactive-notifications-in-ios-8/
  
- UIMutableUserNotificationAction *acceptAction = [[UIMutableUserNotificationAction alloc] init];
- [acceptAction setActivationMode:UIUserNotificationActivationModeBackground];
- [acceptAction setTitle:@"Accept"];
- [acceptAction setIdentifier:@"ACCEPT_ACTION"];
- [acceptAction setDestructive:NO];
- [acceptAction setAuthenticationRequired:NO];
- 
- UIMutableUserNotificationAction *denyAction = [[UIMutableUserNotificationAction alloc] init];
- [denyAction setActivationMode:UIUserNotificationActivationModeBackground];
- [denyAction setTitle:@"Deny"];
- [denyAction setIdentifier:@"DENY_ACTION"];
- [denyAction setDestructive:NO];
- [denyAction setAuthenticationRequired:NO];
- 
- UIMutableUserNotificationCategory *actionCategory = [[UIMutableUserNotificationCategory alloc] init];
- [actionCategory setIdentifier:@"ACTIONABLE"];
- [actionCategory setActions:@[acceptAction, denyAction]
- forContext:UIUserNotificationActionContextDefault];
- 
- NSSet *categories = [NSSet setWithObject:actionCategory];
- 
  */

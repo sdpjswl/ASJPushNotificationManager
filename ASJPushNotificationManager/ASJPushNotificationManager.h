@@ -25,9 +25,9 @@
 #import <UIKit/UIUserNotificationSettings.h>
 
 typedef NS_ENUM(NSUInteger, ASJPushNotificationType) {
-  ASJPushNotificationTypeNone = 0,
-  ASJPushNotificationTypeBadge = 1 << 0,
-  ASJPushNotificationTypeSound = 1 << 1,
+  ASJPushNotificationTypeNone   = 0,
+  ASJPushNotificationTypeBadge  = 1 << 0,
+  ASJPushNotificationTypeSound  = 1 << 1,
   ASJPushNotificationTypeAlert
 };
 
@@ -52,6 +52,8 @@ typedef void(^CompletionBlock)(NSString * _Nullable deviceToken, NSError * _Null
 /**
  *  Register for notification settings and push notifications.
  *
+ *  @param types      You can specify the types of push notifications you'd like to receive. Check out 'ASJPushNotificationType' above. You can use bitmask to choose multiple types, like; ASJPushNotificationTypeNone | ASJPushNotificationTypeBadge, and so on.
+ *  @param categories This needs to be an 'NSSet' of 'UIUserNotificationCategory's. This shows action buttons in the received push. It's optional and can be 'nil'.
  *  @param completion A block containing the device token and error. Both may be nil in different situations. You can access the device token at any time using the "deviceToken" property.
  */
 - (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UIUserNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion;
