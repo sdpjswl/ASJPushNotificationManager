@@ -2,7 +2,7 @@
 //  AppDelegate.h
 //  ASJPushNotificationManagerExample
 //
-//  Created by sudeep_MAC02 on 14/05/16.
+//  Created by sudeep on 14/05/16.
 //  Copyright © 2016 sudeep. All rights reserved.
 //
 
@@ -12,6 +12,4 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-
 @end
-

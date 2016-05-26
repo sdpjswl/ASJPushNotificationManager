@@ -1,5 +1,5 @@
 //
-// ASJPushNotificationDelegateHandler.h
+// ASJPushNotificationDelegate.h
 //
 // Copyright (c) 2016 Sudeep Jaiswal
 //
@@ -25,7 +25,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ASJPushNotificationDelegateHandler : NSObject
+@interface ASJPushNotificationDelegate : NSObject
 
 @end
 

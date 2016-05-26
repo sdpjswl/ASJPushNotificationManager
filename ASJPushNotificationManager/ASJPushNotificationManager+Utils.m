@@ -64,8 +64,9 @@
   }
   NSUInteger dataLength = data.length;
   NSMutableString *hexString = [NSMutableString stringWithCapacity:(dataLength * 2)];
-  for (int i=0; i<dataLength; ++i) {
-    [hexString appendString:[NSString stringWithFormat:@"%02hhx", dataBuffer[i]]];
+  for (int i=0; i<dataLength; ++i)
+  {
+    [hexString appendString:[NSString stringWithFormat:@"%02lx", (unsigned long)dataBuffer[i]]];
   }
   return [NSString stringWithString:hexString];
 }

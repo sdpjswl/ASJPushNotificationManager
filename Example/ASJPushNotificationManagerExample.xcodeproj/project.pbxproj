@@ -14,7 +14,7 @@
 		6B0E3A011CE6CDB400BA164C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6B0E3A001CE6CDB400BA164C /* Assets.xcassets */; };
 		6B0E3A041CE6CDB400BA164C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6B0E3A021CE6CDB400BA164C /* LaunchScreen.storyboard */; };
 		6B0E3A0E1CE6CE5800BA164C /* ASJPushNotificationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B0E3A0D1CE6CE5800BA164C /* ASJPushNotificationManager.m */; };
-		6B0E3A181CE6ED8C00BA164C /* ASJPushNotificationDelegateHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B0E3A171CE6ED8C00BA164C /* ASJPushNotificationDelegateHandler.m */; };
+		6B0E3A181CE6ED8C00BA164C /* ASJPushNotificationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B0E3A171CE6ED8C00BA164C /* ASJPushNotificationDelegate.m */; };
 		6B0E3A1B1CE6F14300BA164C /* ASJPushNotificationManager+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B0E3A1A1CE6F14300BA164C /* ASJPushNotificationManager+Utils.m */; };
 /* End PBXBuildFile section */
 
@@ -31,8 +31,8 @@
 		6B0E3A051CE6CDB400BA164C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6B0E3A0C1CE6CE5800BA164C /* ASJPushNotificationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASJPushNotificationManager.h; sourceTree = "<group>"; };
 		6B0E3A0D1CE6CE5800BA164C /* ASJPushNotificationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASJPushNotificationManager.m; sourceTree = "<group>"; };
-		6B0E3A161CE6ED8C00BA164C /* ASJPushNotificationDelegateHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASJPushNotificationDelegateHandler.h; sourceTree = "<group>"; };
-		6B0E3A171CE6ED8C00BA164C /* ASJPushNotificationDelegateHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASJPushNotificationDelegateHandler.m; sourceTree = "<group>"; };
+		6B0E3A161CE6ED8C00BA164C /* ASJPushNotificationDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASJPushNotificationDelegate.h; sourceTree = "<group>"; };
+		6B0E3A171CE6ED8C00BA164C /* ASJPushNotificationDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASJPushNotificationDelegate.m; sourceTree = "<group>"; };
 		6B0E3A191CE6F14300BA164C /* ASJPushNotificationManager+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ASJPushNotificationManager+Utils.h"; sourceTree = "<group>"; };
 		6B0E3A1A1CE6F14300BA164C /* ASJPushNotificationManager+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ASJPushNotificationManager+Utils.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -96,8 +96,8 @@
 				6B0E3A0D1CE6CE5800BA164C /* ASJPushNotificationManager.m */,
 				6B0E3A191CE6F14300BA164C /* ASJPushNotificationManager+Utils.h */,
 				6B0E3A1A1CE6F14300BA164C /* ASJPushNotificationManager+Utils.m */,
-				6B0E3A161CE6ED8C00BA164C /* ASJPushNotificationDelegateHandler.h */,
-				6B0E3A171CE6ED8C00BA164C /* ASJPushNotificationDelegateHandler.m */,
+				6B0E3A161CE6ED8C00BA164C /* ASJPushNotificationDelegate.h */,
+				6B0E3A171CE6ED8C00BA164C /* ASJPushNotificationDelegate.m */,
 			);
 			name = ASJPushNotificationManager;
 			path = ../../ASJPushNotificationManager;
@@ -178,7 +178,7 @@
 				6B0E39F61CE6CDB400BA164C /* main.m in Sources */,
 				6B0E3A1B1CE6F14300BA164C /* ASJPushNotificationManager+Utils.m in Sources */,
 				6B0E3A0E1CE6CE5800BA164C /* ASJPushNotificationManager.m in Sources */,
-				6B0E3A181CE6ED8C00BA164C /* ASJPushNotificationDelegateHandler.m in Sources */,
+				6B0E3A181CE6ED8C00BA164C /* ASJPushNotificationDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

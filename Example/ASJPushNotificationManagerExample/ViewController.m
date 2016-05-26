@@ -2,7 +2,7 @@
 //  ViewController.m
 //  ASJPushNotificationManagerExample
 //
-//  Created by sudeep_MAC02 on 14/05/16.
+//  Created by sudeep on 14/05/16.
 //  Copyright © 2016 sudeep. All rights reserved.
 //
 
@@ -72,7 +72,7 @@
 {
   ASJPushNotificationType types = ASJPushNotificationTypeAlert | ASJPushNotificationTypeBadge | ASJPushNotificationTypeSound;
   
-  [self.pushNotificationManager registerWithTypes:types completion:^(NSString * _Nullable deviceToken, NSError * _Nullable error)
+  [self.pushNotificationManager registerWithTypes:types categories:nil completion:^(NSString * _Nullable deviceToken, NSError * _Nullable error)
    {
      NSString *text = nil;
      if (deviceToken.length) {

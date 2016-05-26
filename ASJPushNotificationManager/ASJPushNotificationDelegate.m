@@ -1,5 +1,5 @@
 //
-// ASJPushNotificationDelegateHandler.m
+// ASJPushNotificationDelegate.m
 //
 // Copyright (c) 2016 Sudeep Jaiswal
 //
@@ -21,7 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "ASJPushNotificationDelegateHandler.h"
+#import "ASJPushNotificationDelegate.h"
 #import <UIKit/UIApplication.h>
 
 NSString *const ASJUserNotificationSettingsNotificationPrivate = @"asj_user_notification_settings_notification_private";
@@ -29,11 +29,11 @@ NSString *const ASJTokenErrorNotificationPrivate = @"asj_token_error_notificatio
 NSString *const ASJTokenReceivedNotificationPrivate = @"asj_token_received_notification_private";
 NSString *const ASJPushReceivedNotificationPrivate = @"asj_push_received_notification_private";
 
-@interface ASJPushNotificationDelegateHandler () <UIApplicationDelegate>
+@interface ASJPushNotificationDelegate () <UIApplicationDelegate>
 
 @end
 
-@implementation ASJPushNotificationDelegateHandler
+@implementation ASJPushNotificationDelegate
 
 #pragma mark - UIApplicationDelegate
 
@@ -60,31 +60,5 @@ NSString *const ASJPushReceivedNotificationPrivate = @"asj_push_received_notific
 {
   [[NSNotificationCenter defaultCenter] postNotificationName:ASJPushReceivedNotificationPrivate object:userInfo];
 }
-
-// rec'd push (block)
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
-{
-  // appending application state to "userInfo"
-  NSMutableDictionary *temp = [[NSMutableDictionary alloc] initWithDictionary:userInfo];
-  [temp setObject:@(application.applicationState) forKey:@"applicationState"];
-  userInfo = [NSDictionary dictionaryWithDictionary:temp];
-  
-  [[NSNotificationCenter defaultCenter] postNotificationName:ASJPushReceivedNotificationPrivate object:userInfo];
-  
-  // necessary to call block
-  completionHandler(UIBackgroundFetchResultNewData);
-}
-
-//- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler
-//{
-//
-//}
-
-/*
- 
-  NS_AVAILABLE_IOS(8_0);
- 
- - (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void(^)())completionHandler NS_AVAILABLE_IOS(9_0);
- */
 
 @end

@@ -24,6 +24,8 @@
 #import "ASJPushNotificationManager.h"
 #import <UIKit/UIApplication.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ASJPushNotificationManager (Utils)
 
 /**
@@ -61,3 +63,5 @@
 + (NSString *)deviceTokenStringFromData:(NSData *)data;
 
 @end
+
+NS_ASSUME_NONNULL_END
