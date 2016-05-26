@@ -79,7 +79,8 @@ Notification posted when `application:didReceiveRemoteNotification:` or `applica
 - [iOS: Access app-info.plist variables in code](http://stackoverflow.com/questions/9530075/ios-access-app-info-plist-variables-in-code)
 - [didReceiveRemoteNotification: fetchCompletionHandler: open from icon vs push notification](http://stackoverflow.com/questions/22085234/didreceiveremotenotification-fetchcompletionhandler-open-from-icon-vs-push-not)
 - [Can you swizzle application:didReceiveRemoteNotification:](http://stackoverflow.com/questions/20483159/can-you-swizzle-applicationdidreceiveremotenotification/33493541#33493541)
-- [M2DPushNotificationManager](https://github.com/0x0c/M2DPushNotificationManager) let me know how to check status of push registeration on iOS 7
+- [Best way to serialize an NSData into a hexadeximal string](http://stackoverflow.com/questions/1305225/best-way-to-serialize-an-nsdata-into-a-hexadeximal-string)
+- [M2DPushNotificationManager](https://github.com/0x0c/M2DPushNotificationManager) - Check status of push registration below iOS 8
 
 # License
 
