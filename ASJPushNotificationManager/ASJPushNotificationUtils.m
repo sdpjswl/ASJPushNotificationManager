@@ -27,12 +27,9 @@
 
 - (BOOL)isAlreadyRegistered
 {
-  BOOL canCheckForRegister = [self.application respondsToSelector:@selector(isRegisteredForRemoteNotifications)];
-  
-  if (canCheckForRegister) {
+  if (self.isiOS8OrAbove) {
     return self.application.isRegisteredForRemoteNotifications;
   }
-  
   return (self.application.enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone);
 }
 
