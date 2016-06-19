@@ -8,7 +8,7 @@ The procedure to setup push notifications changed from iOS 8.0, and if your app 
 
 CocoaPods is the recommended way to install this library. Just add the following command in your `Podfile` and run `pod install`:
 
-```
+```ruby
 pod 'ASJPushNotificationManager'
 ```
 
@@ -19,11 +19,13 @@ You need to import `ASJPushNotificationManager.h` in the class where you need to
 ```objc
 + (instancetype)sharedInstance;
 ```
+
 This class is a singleton and you are required to use its shared instance to access the defined properties and methods.
 
 ```objc
 - (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UIUserNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion;
 ```
+
 Call this method to invoke the registration flow. When called for the first time, it will prompt the user that the app would like to send push notifications. The completion block will fire after the user makes a choice, and you will receive the device token or error object.
 
 The default delegate method `application:didRegisterForRemoteNotificationsWithDeviceToken:` returns the device token as `NSData`. It is converted into a usable `NSString` before you receive it in the block. You can pass this string on to your server like always. **Note** that you will **not** get a token on simulator.
@@ -31,11 +33,13 @@ The default delegate method `application:didRegisterForRemoteNotificationsWithDe
 ```objc
 @property (nullable, readonly, copy, nonatomic) NSString *deviceToken;
 ```
+
 The generated device token is always available for use as an exposed property. Note that it can be `nil`, in case user did not allow receiving push notifications.
 
 ```objc
 - (void)unregister;
 ```
+
 To stop receiving pushes in app, you can unregister.
 
 ### Handling push events
@@ -45,21 +49,25 @@ Most of the delegate methods are abstracted away and **will not** be called even
 ```objc
 extern NSString *const ASJUserNotificationSettingsNotification;
 ```
+
 Posted when `application:didRegisterUserNotificationSettings:` is called.
 
 ```objc
 extern NSString *const ASJTokenErrorNotification;
 ```
+
 Notification posted when `application:didFailToRegisterForRemoteNotificationsWithError:` is called.
 
 ```objc
 extern NSString *const ASJTokenReceivedNotification;
 ```
+
 Notification posted when `application:didRegisterForRemoteNotificationsWithDeviceToken:` is called.
 
 ```objc
 extern NSString *const ASJPushReceivedNotification;
 ```
+
 Notification posted when `application:didReceiveRemoteNotification:` is called.
 
 ### Limitations
