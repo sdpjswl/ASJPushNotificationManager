@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name          = 'ASJPushNotificationManager'
-  s.version       = '0.1'
+  s.version       = '1.0'
   s.platform      = :ios, '7.0'
   s.license       = { :type => 'MIT' }
   s.homepage      = 'https://github.com/sudeepjaiswal/ASJPushNotificationManager'
