@@ -106,6 +106,10 @@ I have used the notifications pattern so that the user could receive pushes in a
 - [Best way to serialize an NSData into a hexadeximal string](http://stackoverflow.com/questions/1305225/best-way-to-serialize-an-nsdata-into-a-hexadeximal-string)
 - [M2DPushNotificationManager](https://github.com/0x0c/M2DPushNotificationManager) - Check status of push registration below iOS 8
 
+# To-do
+
+- Add checks for iOS 7 so that there are no warnings.
+
 # License
 
 `ASJPushNotificationManager` is available under the MIT license. See the LICENSE file for more info.
