@@ -30,22 +30,22 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 /**
- *  Notification posted when "application:didRegisterUserNotificationSettings:" is called.
+ *  Notification posted when 'application:didRegisterUserNotificationSettings:' is called.
  */
 extern NSString *const ASJUserNotificationSettingsNotificationPrivate;
 
 /**
- *  Notification posted when "application:didFailToRegisterForRemoteNotificationsWithError:" is called.
+ *  Notification posted when 'application:didFailToRegisterForRemoteNotificationsWithError:' is called.
  */
 extern NSString *const ASJTokenErrorNotificationPrivate;
 
 /**
- *  Notification posted when "application:didRegisterForRemoteNotificationsWithDeviceToken:" is called.
+ *  Notification posted when 'application:didRegisterForRemoteNotificationsWithDeviceToken:' is called.
  */
 extern NSString *const ASJTokenReceivedNotificationPrivate;
 
 /**
- *  Notification posted when "application:didReceiveRemoteNotification:" or "application:didReceiveRemoteNotification:fetchCompletionHandler:" is called.
+ *  Notification posted when 'application:didReceiveRemoteNotification:' or 'application:didReceiveRemoteNotification:fetchCompletionHandler:' is called.
  */
 extern NSString *const ASJPushReceivedNotificationPrivate;
 

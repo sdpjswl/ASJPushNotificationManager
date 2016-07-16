@@ -51,8 +51,8 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 #pragma mark - Swizzling
 
 /**
- *  Normally, the delegates related to push notifications come in AppDelegate. I want to implement them elsewhere so that my AppDelegate is not cluttered. The way to do this is swizzling.
- *  I am checking whether those delegate methods are implemented in AppDelegate. If they are, I am exchanging their implementation with my own. If they aren't, I am adding my method+implementation in there. The best part of this is that control will come in those methods and it will be assumed that it's the AppDelegate class.
+ *  Normally, the delegates related to push notifications come in 'AppDelegate'. I want to implement them elsewhere so that my 'AppDelegate' is not cluttered. The way to do this is swizzling.
+ *  I am checking whether those delegate methods are implemented in 'AppDelegate'. If they are, I am exchanging their implementation with my own. If they aren't, I am adding my method+implementation in there. The best part of this is that control will come in those methods and it will be assumed that it's the 'AppDelegate' class.
  */
 + (void)load
 {
@@ -84,9 +84,9 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 }
 
 /**
- *  It may happen that the AppDelegate clsss in a project is not exactly called that. It may be have a prefix, or could be something entirely different. I am inferring what the AppDelegate is by checking which classes adopt the UIApplicationDelegate protocol. There will usually be only one such class. In my case, I am also adopting it in my custom delegate class, so I am ignoring it in my check.
+ *  It may happen that the 'AppDelegate' clsss in a project is not exactly called that. It may be have a prefix, or could be something entirely different. I am inferring what the 'AppDelegate' is by checking which classes adopt the 'UIApplicationDelegate' protocol. There will usually be only one such class. In my case, I am also adopting it in my custom delegate class, so I am ignoring it in my check.
  *
- *  @return The AppDelegate "Class"
+ *  @return The 'AppDelegate''s 'Class'
  */
 + (Class)appDelegateClass
 {
@@ -115,7 +115,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 }
 
 /**
- *  These are the delegate methods that are being swizzled. The three with "completionHandler:" are not present here.
+ *  These are the delegate methods that are being swizzled. The three with 'completionHandler:' are not present here.
  *
  *  @return An array of selector strings.
  */
@@ -156,7 +156,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     return;
   }
   
-  // start observing custom notifications which will be posted from delegate methods. after swizzling, the delegate methods are part of the perceived "AppDelegate" class and not the current class, so we need a way to pass data from there to here
+  // start observing custom notifications which will be posted from delegate methods. after swizzling, the delegate methods are part of the perceived 'AppDelegate' class and not the current class, so we need a way to pass data from there to here
   [self startListeningForAppDelegateNotifications];
   
   // different way to register in iOS 7, changed from iOS 8
@@ -259,6 +259,9 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 
 #pragma mark - Device token
 
+/**
+ *  The device token is being archived into 'NSData' and saved in user defaults.
+ */
 - (void)setDeviceToken:(NSString *)deviceToken
 {
   if (deviceToken.length) {
@@ -270,6 +273,9 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
   [self.userDefaults synchronize];
 }
 
+/**
+ *  The device token is being retreived from  user defaults and unarchived back into 'NSString'.
+ */
 - (NSString *)deviceToken
 {
   if (_deviceTokenPrivate) {

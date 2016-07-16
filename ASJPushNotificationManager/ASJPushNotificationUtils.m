@@ -53,6 +53,7 @@
   return [NSUserDefaults standardUserDefaults];
 }
 
+// Thanks: http://stackoverflow.com/questions/1305225/best-way-to-serialize-an-nsdata-into-a-hexadeximal-string
 + (NSString *)deviceTokenStringFromData:(NSData *)data
 {
   const unsigned char *dataBuffer = (const unsigned char *)data.bytes;

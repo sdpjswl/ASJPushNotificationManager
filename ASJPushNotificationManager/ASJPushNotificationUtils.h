@@ -29,12 +29,12 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ASJPushNotificationManager (Utils)
 
 /**
- *  Is app already registered for remote notifications.
+ *  Is app already registered for remote notifications?
  */
 @property (readonly, nonatomic) BOOL isAlreadyRegistered;
 
 /**
- *  Is device version equal to or higher than iOS 8.0.
+ *  Is device version equal to or higher than iOS 8.0?
  */
 @property (readonly, nonatomic) BOOL isiOS8OrAbove;
 
@@ -54,11 +54,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, weak, nonatomic) NSUserDefaults *userDefaults;
 
 /**
- *  Device token is received as binary "NSData". This is a helper method to convert it into a usable "NSString" so that it can be sent to server.
+ *  Device token is received as binary 'NSData'. This is a helper method to convert it into a usable 'NSString' so that it can be sent to server.
  *
- *  @param data The device token "NSData".
+ *  @param data The device token 'NSData'.
  *
- *  @return The converted "NSString".
+ *  @return The converted 'NSString'.
  */
 + (NSString *)deviceTokenStringFromData:(NSData *)data;
 
