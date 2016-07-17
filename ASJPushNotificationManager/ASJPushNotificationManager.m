@@ -166,11 +166,13 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:categories];
     [self.application registerUserNotificationSettings:settings];
   }
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 80000
   else
   {
     UIRemoteNotificationType notificationTypes = (UIRemoteNotificationType)types;
     [self.application registerForRemoteNotificationTypes:notificationTypes];
   }
+#endif
 }
 
 /**

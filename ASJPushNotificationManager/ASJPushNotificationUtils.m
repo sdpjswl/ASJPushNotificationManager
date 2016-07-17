@@ -30,7 +30,10 @@
   if (self.isiOS8OrAbove) {
     return self.application.isRegisteredForRemoteNotifications;
   }
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 80000
   return (self.application.enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone);
+#endif
+  return NO;
 }
 
 - (BOOL)isiOS8OrAbove
