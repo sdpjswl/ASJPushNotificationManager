@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.1](https://github.com/sudeepjaiswal/ASJPushNotificationManager/releases/tag/1.1)
+Released on Sunday, 17 Jul, 2016.
+
+#### Added
+* Added compile time checks to fix iOS 7 warnings.
+
 ## [1.0](https://github.com/sudeepjaiswal/ASJPushNotificationManager/releases/tag/1.0)
 Released on Saturday, 16 Jul, 2016.
 
