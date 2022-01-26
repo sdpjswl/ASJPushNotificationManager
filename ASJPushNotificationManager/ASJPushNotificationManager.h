@@ -22,14 +22,20 @@
 // THE SOFTWARE.
 
 #import <Foundation/NSString.h>
-#import <UIKit/UIUserNotificationSettings.h>
+#import <UserNotifications/UNNotificationCategory.h>
 
 typedef NS_ENUM(NSUInteger, ASJPushNotificationType)
 {
-    ASJPushNotificationTypeNone   = 0,
-    ASJPushNotificationTypeBadge  = 1 << 0,
-    ASJPushNotificationTypeSound  = 1 << 1,
-    ASJPushNotificationTypeAlert
+    ASJPushNotificationTypeNone                             = 0,
+    ASJPushNotificationTypeBadge                            = 1 << 0,
+    ASJPushNotificationTypeSound                            = 1 << 1,
+    ASJPushNotificationTypeAlert                            = 1 << 2,
+    ASJAuthorizationOptionCarPlay                           = 1 << 3,
+    ASJPushNotificationTypeCriticalAlert                    = 1 << 4,
+    ASJPushNotificationTypeProvidesAppNotificationSettings  = 1 << 5,
+    ASJPushNotificationTypeProvisional                      = 1 << 6,
+    ASJPushNotificationTypeAnnouncement                     = 1 << 7,
+    ASJPushNotificationTypeTimeSensitive                    = 1 << 8
 };
 
 NS_ASSUME_NONNULL_BEGIN
@@ -57,7 +63,7 @@ typedef void(^CompletionBlock)(NSString * _Nullable deviceToken, NSError * _Null
  *  @param categories This needs to be an 'NSSet' of 'UIUserNotificationCategory's. This shows action buttons in the received push. It's optional and can be 'nil'.
  *  @param completion A block containing the device token and error. Both may be nil in different situations. You can access the device token at any time using the 'deviceToken' property.
  */
-- (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UIUserNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion;
+- (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UNNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion;
 
 /**
  *  Unregister for remote notifications. You will stop seeing notifications in app after this. You can always re-register later.
@@ -67,9 +73,14 @@ typedef void(^CompletionBlock)(NSString * _Nullable deviceToken, NSError * _Null
 @end
 
 /**
- *  Notification posted when 'application:didRegisterUserNotificationSettings:' is called.
+ *  Notification posted when permissions are granted.
  */
-extern NSString *const ASJUserNotificationSettingsNotification;
+extern NSString *const ASJAuthorizationSuccessfulNotification;
+
+/**
+ *  Notification posted when permissions are not granted.
+ */
+extern NSString *const ASJAuthorizationFailedNotification;
 
 /**
  *  Notification posted when 'application:didFailToRegisterForRemoteNotificationsWithError:' is called.

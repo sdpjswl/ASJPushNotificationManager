@@ -30,11 +30,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 /**
- *  Notification posted when 'application:didRegisterUserNotificationSettings:' is called.
- */
-extern NSString *const ASJUserNotificationSettingsNotificationPrivate;
-
-/**
  *  Notification posted when 'application:didFailToRegisterForRemoteNotificationsWithError:' is called.
  */
 extern NSString *const ASJTokenErrorNotificationPrivate;

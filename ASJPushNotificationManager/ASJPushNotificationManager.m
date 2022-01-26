@@ -26,19 +26,19 @@
 #import <objc/runtime.h>
 
 NSString *const kDeviceTokenDefaultsKey = @"asj_device_token";
-NSString *const ASJUserNotificationSettingsNotification = @"asj_user_notification_settings_notification";
+NSString *const ASJAuthorizationSuccessfulNotification = @"asj_authorization_successful_notification";
+NSString *const ASJAuthorizationFailedNotification = @"asj_authorization_failed_notification";
 NSString *const ASJTokenErrorNotification = @"asj_token_error_notification";
 NSString *const ASJTokenReceivedNotification = @"asj_token_received_notification";
 NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 
-@interface ASJPushNotificationManager ()
+@interface ASJPushNotificationManager () <UNUserNotificationCenterDelegate>
 
 @property (copy, nonatomic) NSString *deviceToken;
 @property (copy, nonatomic) NSString *deviceTokenPrivate;
 @property (copy) CompletionBlock callback;
 
 - (void)startListeningForAppDelegateNotifications;
-- (void)handleRegisteredSettings:(NSNotification *)note;
 - (void)handleDeviceTokenError:(NSNotification *)note;
 - (void)handleDeviceTokenReceived:(NSNotification *)note;
 - (void)handlePushReceived:(NSNotification *)note;
@@ -143,7 +143,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 
 #pragma mark - Register
 
-- (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UIUserNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion
+- (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UNNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion
 {
     _callback = completion;
     
@@ -159,20 +159,22 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     // start observing custom notifications which will be posted from delegate methods. after swizzling, the delegate methods are part of the perceived 'AppDelegate' class and not the current class, so we need a way to pass data from there to here
     [self startListeningForAppDelegateNotifications];
     
-    // different way to register in iOS 7, changed from iOS 8
-    if (self.isiOS8OrAbove)
-    {
-        UIUserNotificationType notificationTypes = (UIUserNotificationType)types;
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:categories];
-        [self.application registerUserNotificationSettings:settings];
-    }
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 80000
-    else
-    {
-        UIRemoteNotificationType notificationTypes = (UIRemoteNotificationType)types;
-        [self.application registerForRemoteNotificationTypes:notificationTypes];
-    }
-#endif
+    UNAuthorizationOptions options = (UNAuthorizationOptions)types;
+    [self.userNotificationCenter requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError * _Nullable error)
+     {
+        if (granted == NO)
+        {
+            // send out public notification
+            [self.notificationCenter postNotificationName:ASJAuthorizationFailedNotification object:nil];
+            return;
+        }
+        
+        // register for push
+        [self.application registerForRemoteNotifications];
+        
+        // send out public notification
+        [self.notificationCenter postNotificationName:ASJAuthorizationSuccessfulNotification object:nil];
+    }];
 }
 
 /**
@@ -180,8 +182,6 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
  */
 - (void)startListeningForAppDelegateNotifications
 {
-    [self.notificationCenter addObserver:self selector:@selector(handleRegisteredSettings:) name:ASJUserNotificationSettingsNotificationPrivate object:nil];
-    
     [self.notificationCenter addObserver:self selector:@selector(handleDeviceTokenError:) name:ASJTokenErrorNotificationPrivate object:nil];
     
     [self.notificationCenter addObserver:self selector:@selector(handleDeviceTokenReceived:) name:ASJTokenReceivedNotificationPrivate object:nil];
@@ -190,16 +190,6 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 }
 
 #pragma mark - Notifications handling
-
-- (void)handleRegisteredSettings:(NSNotification *)note
-{
-    // register for push
-    [self.application registerForRemoteNotifications];
-    
-    // send out public notification
-    UIUserNotificationSettings *userSettings = (UIUserNotificationSettings *)note.object;
-    [self.notificationCenter postNotificationName:ASJUserNotificationSettingsNotification object:userSettings];
-}
 
 - (void)handleDeviceTokenError:(NSNotification *)note
 {
@@ -250,8 +240,6 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 
 - (void)stopListeningForAppDelegateNotifications
 {
-    [self.notificationCenter removeObserver:self name:ASJUserNotificationSettingsNotificationPrivate object:nil];
-    
     [self.notificationCenter removeObserver:self name:ASJTokenErrorNotificationPrivate object:nil];
     
     [self.notificationCenter removeObserver:self name:ASJTokenReceivedNotificationPrivate object:nil];

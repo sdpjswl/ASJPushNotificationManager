@@ -24,7 +24,6 @@
 #import "ASJPushNotificationDelegate.h"
 #import <UIKit/UIApplication.h>
 
-NSString *const ASJUserNotificationSettingsNotificationPrivate = @"asj_user_notification_settings_notification_private";
 NSString *const ASJTokenErrorNotificationPrivate = @"asj_token_error_notification_private";
 NSString *const ASJTokenReceivedNotificationPrivate = @"asj_token_received_notification_private";
 NSString *const ASJPushReceivedNotificationPrivate = @"asj_push_received_notification_private";
@@ -38,12 +37,6 @@ NSString *const ASJPushReceivedNotificationPrivate = @"asj_push_received_notific
 @implementation ASJPushNotificationDelegate
 
 #pragma mark - UIApplicationDelegate
-
-// registered user notification settings
-- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
-{
-    [self.notificationCenter postNotificationName:ASJUserNotificationSettingsNotificationPrivate object:notificationSettings];
-}
 
 // failed
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
