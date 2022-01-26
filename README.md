@@ -106,6 +106,7 @@ I have used the notifications pattern so that the user could receive pushes in a
 - [Best way to serialize an NSData into a hexadeximal string](http://stackoverflow.com/questions/1305225/best-way-to-serialize-an-nsdata-into-a-hexadeximal-string)
 - [M2DPushNotificationManager](https://github.com/0x0c/M2DPushNotificationManager) - Check status of push registration below iOS 8
 - [Nick Lockwood's](https://github.com/nicklockwood) ['Deprecated' gist](https://gist.github.com/nicklockwood/d63c69ba2f40a33d7aa4) to get rid of iOS 7 warnings
+- [Upgradation to iOS 10 - USerNotifications framework](https://www.plotprojects.com/blog/migrating-from-uilocalnotification-ios-10-dev-guide/)
 
 # To-do
 
