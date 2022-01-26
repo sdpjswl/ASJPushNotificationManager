@@ -42,32 +42,32 @@ NSString *const ASJPushReceivedNotificationPrivate = @"asj_push_received_notific
 // registered user notification settings
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
-  [self.notificationCenter postNotificationName:ASJUserNotificationSettingsNotificationPrivate object:notificationSettings];
+    [self.notificationCenter postNotificationName:ASJUserNotificationSettingsNotificationPrivate object:notificationSettings];
 }
 
 // failed
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-  [self.notificationCenter postNotificationName:ASJTokenErrorNotificationPrivate object:error];
+    [self.notificationCenter postNotificationName:ASJTokenErrorNotificationPrivate object:error];
 }
 
 // rec'd device token
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-  [self.notificationCenter postNotificationName:ASJTokenReceivedNotificationPrivate object:deviceToken];
+    [self.notificationCenter postNotificationName:ASJTokenReceivedNotificationPrivate object:deviceToken];
 }
 
 // rec'd push
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
-  [self.notificationCenter postNotificationName:ASJPushReceivedNotificationPrivate object:userInfo];
+    [self.notificationCenter postNotificationName:ASJPushReceivedNotificationPrivate object:userInfo];
 }
 
 #pragma mark - Property
 
 - (NSNotificationCenter *)notificationCenter
 {
-  return [NSNotificationCenter defaultCenter];
+    return [NSNotificationCenter defaultCenter];
 }
 
 @end

@@ -56,31 +56,31 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
  */
 + (void)load
 {
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^ {
-    
-    Class class = [ASJPushNotificationDelegate class];
-    Class appDelegateClass = [self appDelegateClass];
-    
-    for (NSString *selectorString in [self selectorsToSwizzle])
-    {
-      SEL selector = NSSelectorFromString(selectorString);
-      
-      Method originalMethod = class_getInstanceMethod(appDelegateClass, selector);
-      Method swizzledMethod = class_getInstanceMethod(class, selector);
-      
-      // adding delegate method that's implemented here below to app delegate
-      BOOL didAddMethod = class_addMethod(appDelegateClass, selector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
-      
-      // NO comes if delegate is implemented in AppDelegate
-      if (!didAddMethod) {
-        method_exchangeImplementations(originalMethod, swizzledMethod);
-      }
-      else {
-        class_replaceMethod(class, selector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
-      }
-    }
-  });
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^ {
+        
+        Class class = [ASJPushNotificationDelegate class];
+        Class appDelegateClass = [self appDelegateClass];
+        
+        for (NSString *selectorString in [self selectorsToSwizzle])
+        {
+            SEL selector = NSSelectorFromString(selectorString);
+            
+            Method originalMethod = class_getInstanceMethod(appDelegateClass, selector);
+            Method swizzledMethod = class_getInstanceMethod(class, selector);
+            
+            // adding delegate method that's implemented here below to app delegate
+            BOOL didAddMethod = class_addMethod(appDelegateClass, selector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
+            
+            // NO comes if delegate is implemented in AppDelegate
+            if (!didAddMethod) {
+                method_exchangeImplementations(originalMethod, swizzledMethod);
+            }
+            else {
+                class_replaceMethod(class, selector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));
+            }
+        }
+    });
 }
 
 /**
@@ -90,28 +90,28 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
  */
 + (Class)appDelegateClass
 {
-  unsigned int numberOfClasses = 0;
-  Class *classes = objc_copyClassList(&numberOfClasses);
-  
-  for (unsigned int i=0; i<numberOfClasses; ++i)
-  {
-    Class class = classes[i];
+    unsigned int numberOfClasses = 0;
+    Class *classes = objc_copyClassList(&numberOfClasses);
     
-    // does class adopt "UIApplicationDelegate" protocol?
-    if (!class_conformsToProtocol(class, @protocol(UIApplicationDelegate))) {
-      continue;
+    for (unsigned int i=0; i<numberOfClasses; ++i)
+    {
+        Class class = classes[i];
+        
+        // does class adopt "UIApplicationDelegate" protocol?
+        if (!class_conformsToProtocol(class, @protocol(UIApplicationDelegate))) {
+            continue;
+        }
+        
+        // ignore delegate handler class for adopting "UIApplicationDelegate" protocol
+        if ([NSStringFromClass(class) isEqualToString:NSStringFromClass([ASJPushNotificationDelegate class])]) {
+            continue;
+        }
+        
+        // all that's left
+        return classes[i];
     }
     
-    // ignore delegate handler class for adopting "UIApplicationDelegate" protocol
-    if ([NSStringFromClass(class) isEqualToString:NSStringFromClass([ASJPushNotificationDelegate class])]) {
-      continue;
-    }
-    
-    // all that's left
-    return classes[i];
-  }
-  
-  return nil;
+    return nil;
 }
 
 /**
@@ -121,57 +121,57 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
  */
 + (NSArray<NSString *> *)selectorsToSwizzle
 {
-  NSMutableArray *selectors = [[NSMutableArray alloc] init];
-  [selectors addObject:@"application:didRegisterUserNotificationSettings:"];
-  [selectors addObject:@"application:didFailToRegisterForRemoteNotificationsWithError:"];
-  [selectors addObject:@"application:didRegisterForRemoteNotificationsWithDeviceToken:"];
-  [selectors addObject:@"application:didReceiveRemoteNotification:"];
-  return [NSArray arrayWithArray:selectors];
+    NSMutableArray *selectors = [[NSMutableArray alloc] init];
+    [selectors addObject:@"application:didRegisterUserNotificationSettings:"];
+    [selectors addObject:@"application:didFailToRegisterForRemoteNotificationsWithError:"];
+    [selectors addObject:@"application:didRegisterForRemoteNotificationsWithDeviceToken:"];
+    [selectors addObject:@"application:didReceiveRemoteNotification:"];
+    return [NSArray arrayWithArray:selectors];
 }
 
 #pragma mark - Singleton
 
 + (instancetype)sharedInstance
 {
-  static ASJPushNotificationManager *sharedInstance = nil;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    sharedInstance = [[self alloc] init];
-  });
-  return sharedInstance;
+    static ASJPushNotificationManager *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    return sharedInstance;
 }
 
 #pragma mark - Register
 
 - (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UIUserNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion
 {
-  _callback = completion;
-  
-  // check and send back device token if already registered
-  if (self.isAlreadyRegistered)
-  {
-    if (completion) {
-      completion(self.deviceToken, nil);
+    _callback = completion;
+    
+    // check and send back device token if already registered
+    if (self.isAlreadyRegistered)
+    {
+        if (completion) {
+            completion(self.deviceToken, nil);
+        }
+        return;
     }
-    return;
-  }
-  
-  // start observing custom notifications which will be posted from delegate methods. after swizzling, the delegate methods are part of the perceived 'AppDelegate' class and not the current class, so we need a way to pass data from there to here
-  [self startListeningForAppDelegateNotifications];
-  
-  // different way to register in iOS 7, changed from iOS 8
-  if (self.isiOS8OrAbove)
-  {
-    UIUserNotificationType notificationTypes = (UIUserNotificationType)types;
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:categories];
-    [self.application registerUserNotificationSettings:settings];
-  }
+    
+    // start observing custom notifications which will be posted from delegate methods. after swizzling, the delegate methods are part of the perceived 'AppDelegate' class and not the current class, so we need a way to pass data from there to here
+    [self startListeningForAppDelegateNotifications];
+    
+    // different way to register in iOS 7, changed from iOS 8
+    if (self.isiOS8OrAbove)
+    {
+        UIUserNotificationType notificationTypes = (UIUserNotificationType)types;
+        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:categories];
+        [self.application registerUserNotificationSettings:settings];
+    }
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 80000
-  else
-  {
-    UIRemoteNotificationType notificationTypes = (UIRemoteNotificationType)types;
-    [self.application registerForRemoteNotificationTypes:notificationTypes];
-  }
+    else
+    {
+        UIRemoteNotificationType notificationTypes = (UIRemoteNotificationType)types;
+        [self.application registerForRemoteNotificationTypes:notificationTypes];
+    }
 #endif
 }
 
@@ -180,83 +180,83 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
  */
 - (void)startListeningForAppDelegateNotifications
 {
-  [self.notificationCenter addObserver:self selector:@selector(handleRegisteredSettings:) name:ASJUserNotificationSettingsNotificationPrivate object:nil];
-  
-  [self.notificationCenter addObserver:self selector:@selector(handleDeviceTokenError:) name:ASJTokenErrorNotificationPrivate object:nil];
-  
-  [self.notificationCenter addObserver:self selector:@selector(handleDeviceTokenReceived:) name:ASJTokenReceivedNotificationPrivate object:nil];
-  
-  [self.notificationCenter addObserver:self selector:@selector(handlePushReceived:) name:ASJPushReceivedNotificationPrivate object:nil];
+    [self.notificationCenter addObserver:self selector:@selector(handleRegisteredSettings:) name:ASJUserNotificationSettingsNotificationPrivate object:nil];
+    
+    [self.notificationCenter addObserver:self selector:@selector(handleDeviceTokenError:) name:ASJTokenErrorNotificationPrivate object:nil];
+    
+    [self.notificationCenter addObserver:self selector:@selector(handleDeviceTokenReceived:) name:ASJTokenReceivedNotificationPrivate object:nil];
+    
+    [self.notificationCenter addObserver:self selector:@selector(handlePushReceived:) name:ASJPushReceivedNotificationPrivate object:nil];
 }
 
 #pragma mark - Notifications handling
 
 - (void)handleRegisteredSettings:(NSNotification *)note
 {
-  // register for push
-  [self.application registerForRemoteNotifications];
-  
-  // send out public notification
-  UIUserNotificationSettings *userSettings = (UIUserNotificationSettings *)note.object;
-  [self.notificationCenter postNotificationName:ASJUserNotificationSettingsNotification object:userSettings];
+    // register for push
+    [self.application registerForRemoteNotifications];
+    
+    // send out public notification
+    UIUserNotificationSettings *userSettings = (UIUserNotificationSettings *)note.object;
+    [self.notificationCenter postNotificationName:ASJUserNotificationSettingsNotification object:userSettings];
 }
 
 - (void)handleDeviceTokenError:(NSNotification *)note
 {
-  // send out public notification
-  NSError *error = (NSError *)note.object;
-  [self.notificationCenter postNotificationName:ASJTokenErrorNotification object:error];
-  
-  // token and error are also sent via block
-  if (_callback) {
-    _callback(nil, error);
-  }
+    // send out public notification
+    NSError *error = (NSError *)note.object;
+    [self.notificationCenter postNotificationName:ASJTokenErrorNotification object:error];
+    
+    // token and error are also sent via block
+    if (_callback) {
+        _callback(nil, error);
+    }
 }
 
 - (void)handleDeviceTokenReceived:(NSNotification *)note
 {
-  // convert device token data to string
-  NSData *data = (NSData *)note.object;
-  self.deviceToken = [ASJPushNotificationManager deviceTokenStringFromData:data];
-  
-  // send out public notification
-  [self.notificationCenter postNotificationName:ASJTokenReceivedNotification object:self.deviceToken];
-  
-  // token and error are also sent via block
-  if (_callback) {
-    _callback(self.deviceToken, nil);
-  }
+    // convert device token data to string
+    NSData *data = (NSData *)note.object;
+    self.deviceToken = [ASJPushNotificationManager deviceTokenStringFromData:data];
+    
+    // send out public notification
+    [self.notificationCenter postNotificationName:ASJTokenReceivedNotification object:self.deviceToken];
+    
+    // token and error are also sent via block
+    if (_callback) {
+        _callback(self.deviceToken, nil);
+    }
 }
 
 - (void)handlePushReceived:(NSNotification *)note
 {
-  // send out public notification
-  NSDictionary *userInfo = (NSDictionary *)note.object;
-  [self.notificationCenter postNotificationName:ASJPushReceivedNotification object:userInfo];
+    // send out public notification
+    NSDictionary *userInfo = (NSDictionary *)note.object;
+    [self.notificationCenter postNotificationName:ASJPushReceivedNotification object:userInfo];
 }
 
 #pragma mark - Unregister
 
 - (void)unregister
 {
-  // check covers iOS 7 and 8+. same way for both
-  if (self.isAlreadyRegistered) {
-    [self.application unregisterForRemoteNotifications];
-  }
-  
-  // remove registered observers
-  [self stopListeningForAppDelegateNotifications];
+    // check covers iOS 7 and 8+. same way for both
+    if (self.isAlreadyRegistered) {
+        [self.application unregisterForRemoteNotifications];
+    }
+    
+    // remove registered observers
+    [self stopListeningForAppDelegateNotifications];
 }
 
 - (void)stopListeningForAppDelegateNotifications
 {
-  [self.notificationCenter removeObserver:self name:ASJUserNotificationSettingsNotificationPrivate object:nil];
-  
-  [self.notificationCenter removeObserver:self name:ASJTokenErrorNotificationPrivate object:nil];
-  
-  [self.notificationCenter removeObserver:self name:ASJTokenReceivedNotificationPrivate object:nil];
-  
-  [self.notificationCenter removeObserver:self name:ASJPushReceivedNotificationPrivate object:nil];
+    [self.notificationCenter removeObserver:self name:ASJUserNotificationSettingsNotificationPrivate object:nil];
+    
+    [self.notificationCenter removeObserver:self name:ASJTokenErrorNotificationPrivate object:nil];
+    
+    [self.notificationCenter removeObserver:self name:ASJTokenReceivedNotificationPrivate object:nil];
+    
+    [self.notificationCenter removeObserver:self name:ASJPushReceivedNotificationPrivate object:nil];
 }
 
 #pragma mark - Device token

@@ -27,49 +27,49 @@
 
 - (BOOL)isAlreadyRegistered
 {
-  if (self.isiOS8OrAbove) {
-    return self.application.isRegisteredForRemoteNotifications;
-  }
+    if (self.isiOS8OrAbove) {
+        return self.application.isRegisteredForRemoteNotifications;
+    }
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 80000
-  return (self.application.enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone);
+    return (self.application.enabledRemoteNotificationTypes != UIRemoteNotificationTypeNone);
 #endif
-  return NO;
+    return NO;
 }
 
 - (BOOL)isiOS8OrAbove
 {
-  return [self.application respondsToSelector:@selector(registerUserNotificationSettings:)];
+    return [self.application respondsToSelector:@selector(registerUserNotificationSettings:)];
 }
 
 - (UIApplication *)application
 {
-  return [UIApplication sharedApplication];
+    return [UIApplication sharedApplication];
 }
 
 - (NSNotificationCenter *)notificationCenter
 {
-  return [NSNotificationCenter defaultCenter];
+    return [NSNotificationCenter defaultCenter];
 }
 
 - (NSUserDefaults *)userDefaults
 {
-  return [NSUserDefaults standardUserDefaults];
+    return [NSUserDefaults standardUserDefaults];
 }
 
 // Thanks: http://stackoverflow.com/questions/1305225/best-way-to-serialize-an-nsdata-into-a-hexadeximal-string
 + (NSString *)deviceTokenStringFromData:(NSData *)data
 {
-  const unsigned char *dataBuffer = (const unsigned char *)data.bytes;
-  if (!dataBuffer) {
-    return [[NSString alloc] init];
-  }
-  NSUInteger dataLength = data.length;
-  NSMutableString *hexString = [NSMutableString stringWithCapacity:(dataLength * 2)];
-  for (int i=0; i<dataLength; ++i)
-  {
-    [hexString appendString:[NSString stringWithFormat:@"%02lx", (unsigned long)dataBuffer[i]]];
-  }
-  return [NSString stringWithString:hexString];
+    const unsigned char *dataBuffer = (const unsigned char *)data.bytes;
+    if (!dataBuffer) {
+        return [[NSString alloc] init];
+    }
+    NSUInteger dataLength = data.length;
+    NSMutableString *hexString = [NSMutableString stringWithCapacity:(dataLength * 2)];
+    for (int i=0; i<dataLength; ++i)
+    {
+        [hexString appendString:[NSString stringWithFormat:@"%02lx", (unsigned long)dataBuffer[i]]];
+    }
+    return [NSString stringWithString:hexString];
 }
 
 @end

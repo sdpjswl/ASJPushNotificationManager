@@ -26,10 +26,10 @@
 
 typedef NS_ENUM(NSUInteger, ASJPushNotificationType)
 {
-  ASJPushNotificationTypeNone   = 0,
-  ASJPushNotificationTypeBadge  = 1 << 0,
-  ASJPushNotificationTypeSound  = 1 << 1,
-  ASJPushNotificationTypeAlert
+    ASJPushNotificationTypeNone   = 0,
+    ASJPushNotificationTypeBadge  = 1 << 0,
+    ASJPushNotificationTypeSound  = 1 << 1,
+    ASJPushNotificationTypeAlert
 };
 
 NS_ASSUME_NONNULL_BEGIN

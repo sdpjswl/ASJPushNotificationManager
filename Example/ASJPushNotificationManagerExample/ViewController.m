@@ -25,72 +25,72 @@
 
 - (void)viewDidLoad
 {
-  [super viewDidLoad];
-  [self setup];
+    [super viewDidLoad];
+    [self setup];
 }
 
 - (void)didReceiveMemoryWarning
 {
-  [super didReceiveMemoryWarning];
-  // Dispose of any resources that can be recreated.
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
 
 - (void)dealloc
 {
-  [self.notificationCenter removeObserver:self];
+    [self.notificationCenter removeObserver:self];
 }
 
 #pragma mark - Setup
 
 - (void)setup
 {
-  [self.notificationCenter addObserver:self selector:@selector(didReceivePushNotification:) name:ASJPushReceivedNotification object:nil];
+    [self.notificationCenter addObserver:self selector:@selector(didReceivePushNotification:) name:ASJPushReceivedNotification object:nil];
 }
 
 - (void)didReceivePushNotification:(NSNotification *)note
 {
-  NSString *description = [note.object description];
-  
-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Push received" message:description preferredStyle:UIAlertControllerStyleAlert];
-  
-  UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
-  [alert addAction:ok];
-  
-  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-    [self presentViewController:alert animated:YES completion:nil];
-  }];
+    NSString *description = [note.object description];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Push received" message:description preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [alert addAction:ok];
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [self presentViewController:alert animated:YES completion:nil];
+    }];
 }
 
 - (NSNotificationCenter *)notificationCenter
 {
-  return [NSNotificationCenter defaultCenter];
+    return [NSNotificationCenter defaultCenter];
 }
 
 #pragma mark - IBAction
 
 - (IBAction)registerForPushNotifcations:(id)sender
 {
-  ASJPushNotificationType types = ASJPushNotificationTypeAlert | ASJPushNotificationTypeBadge | ASJPushNotificationTypeSound;
-  
-  [self.pushNotificationManager registerWithTypes:types categories:nil completion:^(NSString * _Nullable deviceToken, NSError * _Nullable error)
-   {
-     NSString *text = nil;
-     if (deviceToken.length) {
-       text = [NSString stringWithFormat:@"Device token: %@", deviceToken];
-     }
-     else {
-       text = [NSString stringWithFormat:@"Error: %@", error.localizedDescription];
-     }
-     
-     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-       _deviceTokenLabel.text = text;
-     }];
-   }];
+    ASJPushNotificationType types = ASJPushNotificationTypeAlert | ASJPushNotificationTypeBadge | ASJPushNotificationTypeSound;
+    
+    [self.pushNotificationManager registerWithTypes:types categories:nil completion:^(NSString * _Nullable deviceToken, NSError * _Nullable error)
+     {
+        NSString *text = nil;
+        if (deviceToken.length) {
+            text = [NSString stringWithFormat:@"Device token: %@", deviceToken];
+        }
+        else {
+            text = [NSString stringWithFormat:@"Error: %@", error.localizedDescription];
+        }
+        
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            self->_deviceTokenLabel.text = text;
+        }];
+    }];
 }
 
 - (ASJPushNotificationManager *)pushNotificationManager
 {
-  return [ASJPushNotificationManager sharedInstance];
+    return [ASJPushNotificationManager sharedInstance];
 }
 
 @end
