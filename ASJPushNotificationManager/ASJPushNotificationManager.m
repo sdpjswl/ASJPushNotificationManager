@@ -123,7 +123,7 @@ NSString *const ASJVisiblePushReceivedNotification = @"asj_visible_push_received
 + (NSArray<NSString *> *)selectorsToSwizzle
 {
     NSMutableArray *selectors = [[NSMutableArray alloc] init];
-    [selectors addObject:@"application:didRegisterUserNotificationSettings:"];
+    [selectors addObject:@"notificationCenter"];
     [selectors addObject:@"application:didFailToRegisterForRemoteNotificationsWithError:"];
     [selectors addObject:@"application:didRegisterForRemoteNotificationsWithDeviceToken:"];
     [selectors addObject:@"application:didReceiveRemoteNotification:fetchCompletionHandler:"];
