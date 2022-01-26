@@ -172,7 +172,9 @@ NSString *const ASJVisiblePushReceivedNotification = @"asj_visible_push_received
         }
         
         // register for push
-        [self.application registerForRemoteNotifications];
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+            [self.application registerForRemoteNotifications];
+        }];
         
         // send out public notification
         [self.notificationCenter postNotificationName:ASJAuthorizationSuccessfulNotification object:nil];
