@@ -266,13 +266,26 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
  */
 - (void)setDeviceToken:(NSString *)deviceToken
 {
-  if (deviceToken.length) {
+    if (deviceToken.length == 0) {
+        return;
+    }
+    
+    NSData *data = nil;
+    
+    if (@available(iOS 11.0, *))
+    {
+        NSError *error = nil;
+        data = [NSKeyedArchiver archivedDataWithRootObject:deviceToken requiringSecureCoding:YES error:&error];
+        NSAssert((error == nil), @"Error archiving device token.");
+    }
+    else {
+        data = [NSKeyedArchiver archivedDataWithRootObject:deviceToken];
+    }
+    
+    [self.userDefaults setObject:data forKey:kDeviceTokenDefaultsKey];
+    [self.userDefaults synchronize];
+    
     _deviceTokenPrivate = deviceToken;
-  }
-  
-  NSData *data = [NSKeyedArchiver archivedDataWithRootObject:deviceToken];
-  [self.userDefaults setObject:data forKey:kDeviceTokenDefaultsKey];
-  [self.userDefaults synchronize];
 }
 
 /**
@@ -280,13 +293,25 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
  */
 - (NSString *)deviceToken
 {
-  if (_deviceTokenPrivate) {
+    if (_deviceTokenPrivate) {
+        return _deviceTokenPrivate;
+    }
+    
+    NSData *data = [self.userDefaults objectForKey:kDeviceTokenDefaultsKey];
+    NSString *token = nil;
+    
+    if (@available(iOS 11.0, *))
+    {
+        NSError *error = nil;
+        token = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSString class] fromData:data error:&error];
+        NSAssert((error == nil), @"Error unarchiving device token.");
+    }
+    else {
+        token = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    }
+    
+    _deviceTokenPrivate = token;
     return _deviceTokenPrivate;
-  }
-  
-  NSData *data = [self.userDefaults objectForKey:kDeviceTokenDefaultsKey];
-  _deviceTokenPrivate = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-  return _deviceTokenPrivate;
 }
 
 @end
