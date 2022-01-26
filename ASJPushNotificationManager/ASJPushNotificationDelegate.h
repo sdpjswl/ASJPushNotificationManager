@@ -42,6 +42,6 @@ extern NSString *const ASJTokenReceivedNotificationPrivate;
 /**
  *  Notification posted when 'application:didReceiveRemoteNotification:' or 'application:didReceiveRemoteNotification:fetchCompletionHandler:' is called.
  */
-extern NSString *const ASJPushReceivedNotificationPrivate;
+extern NSString *const ASJSilentPushReceivedNotificationPrivate;
 
 NS_ASSUME_NONNULL_END

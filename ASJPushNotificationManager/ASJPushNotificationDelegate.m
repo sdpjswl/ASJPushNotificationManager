@@ -26,7 +26,7 @@
 
 NSString *const ASJTokenErrorNotificationPrivate = @"asj_token_error_notification_private";
 NSString *const ASJTokenReceivedNotificationPrivate = @"asj_token_received_notification_private";
-NSString *const ASJPushReceivedNotificationPrivate = @"asj_push_received_notification_private";
+NSString *const ASJSilentPushReceivedNotificationPrivate = @"asj_silent_push_received_notification_private";
 
 @interface ASJPushNotificationDelegate () <UIApplicationDelegate>
 
@@ -50,10 +50,10 @@ NSString *const ASJPushReceivedNotificationPrivate = @"asj_push_received_notific
     [self.notificationCenter postNotificationName:ASJTokenReceivedNotificationPrivate object:deviceToken];
 }
 
-// rec'd push
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+// rec'd silent push
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(nonnull void (^)(UIBackgroundFetchResult))completionHandler
 {
-    [self.notificationCenter postNotificationName:ASJPushReceivedNotificationPrivate object:userInfo];
+    [self.notificationCenter postNotificationName:ASJSilentPushReceivedNotificationPrivate object:completionHandler userInfo:userInfo];
 }
 
 #pragma mark - Property

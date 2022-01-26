@@ -93,8 +93,13 @@ extern NSString *const ASJTokenErrorNotification;
 extern NSString *const ASJTokenReceivedNotification;
 
 /**
- *  Notification posted when 'application:didReceiveRemoteNotification:' is called.
+ *  Notification posted when 'application:didReceiveRemoteNotification:fetchCompletionHandler:' is called.
  */
-extern NSString *const ASJPushReceivedNotification;
+extern NSString *const ASJSilentPushReceivedNotification;
+
+/**
+ *  Notification posted when 'userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:' is called.
+ */
+extern NSString *const ASJVisiblePushReceivedNotification;
 
 NS_ASSUME_NONNULL_END

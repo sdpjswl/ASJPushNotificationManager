@@ -30,7 +30,8 @@ NSString *const ASJAuthorizationSuccessfulNotification = @"asj_authorization_suc
 NSString *const ASJAuthorizationFailedNotification = @"asj_authorization_failed_notification";
 NSString *const ASJTokenErrorNotification = @"asj_token_error_notification";
 NSString *const ASJTokenReceivedNotification = @"asj_token_received_notification";
-NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
+NSString *const ASJSilentPushReceivedNotification = @"asj_silent_push_received_notification";
+NSString *const ASJVisiblePushReceivedNotification = @"asj_visible_push_received_notification";
 
 @interface ASJPushNotificationManager () <UNUserNotificationCenterDelegate>
 
@@ -41,7 +42,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
 - (void)startListeningForAppDelegateNotifications;
 - (void)handleDeviceTokenError:(NSNotification *)note;
 - (void)handleDeviceTokenReceived:(NSNotification *)note;
-- (void)handlePushReceived:(NSNotification *)note;
+- (void)handleSilentPushReceived:(NSNotification *)note;
 - (void)stopListeningForAppDelegateNotifications;
 
 @end
@@ -125,7 +126,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     [selectors addObject:@"application:didRegisterUserNotificationSettings:"];
     [selectors addObject:@"application:didFailToRegisterForRemoteNotificationsWithError:"];
     [selectors addObject:@"application:didRegisterForRemoteNotificationsWithDeviceToken:"];
-    [selectors addObject:@"application:didReceiveRemoteNotification:"];
+    [selectors addObject:@"application:didReceiveRemoteNotification:fetchCompletionHandler:"];
     return [NSArray arrayWithArray:selectors];
 }
 
@@ -137,6 +138,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[self alloc] init];
+        sharedInstance.userNotificationCenter.delegate = sharedInstance;
     });
     return sharedInstance;
 }
@@ -186,7 +188,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     
     [self.notificationCenter addObserver:self selector:@selector(handleDeviceTokenReceived:) name:ASJTokenReceivedNotificationPrivate object:nil];
     
-    [self.notificationCenter addObserver:self selector:@selector(handlePushReceived:) name:ASJPushReceivedNotificationPrivate object:nil];
+    [self.notificationCenter addObserver:self selector:@selector(handleSilentPushReceived:) name:ASJSilentPushReceivedNotificationPrivate object:nil];
 }
 
 #pragma mark - Notifications handling
@@ -218,18 +220,16 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     }
 }
 
-- (void)handlePushReceived:(NSNotification *)note
+- (void)handleSilentPushReceived:(NSNotification *)note
 {
     // send out public notification
-    NSDictionary *userInfo = (NSDictionary *)note.object;
-    [self.notificationCenter postNotificationName:ASJPushReceivedNotification object:userInfo];
+    [self.notificationCenter postNotificationName:ASJSilentPushReceivedNotification object:note.object userInfo:note.userInfo];
 }
 
 #pragma mark - Unregister
 
 - (void)unregister
 {
-    // check covers iOS 7 and 8+. same way for both
     if (self.isAlreadyRegistered) {
         [self.application unregisterForRemoteNotifications];
     }
@@ -244,7 +244,7 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     
     [self.notificationCenter removeObserver:self name:ASJTokenReceivedNotificationPrivate object:nil];
     
-    [self.notificationCenter removeObserver:self name:ASJPushReceivedNotificationPrivate object:nil];
+    [self.notificationCenter removeObserver:self name:ASJSilentPushReceivedNotificationPrivate object:nil];
 }
 
 #pragma mark - Device token
@@ -300,6 +300,15 @@ NSString *const ASJPushReceivedNotification = @"asj_push_received_notification";
     
     _deviceTokenPrivate = token;
     return _deviceTokenPrivate;
+}
+
+#pragma mark - UNUserNotificationCenterDelegate
+
+- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
+{
+    // send out public notification
+    NSDictionary *userInfo = @{ @"payload": response };
+    [self.notificationCenter postNotificationName:ASJVisiblePushReceivedNotification object:completionHandler userInfo:userInfo];
 }
 
 @end

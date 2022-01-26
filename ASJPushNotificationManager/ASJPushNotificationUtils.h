@@ -23,6 +23,7 @@
 
 #import "ASJPushNotificationManager.h"
 #import <UIKit/UIApplication.h>
+#import <UserNotifications/UNUserNotificationCenter.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -47,6 +48,11 @@ NS_ASSUME_NONNULL_BEGIN
  *  Convenience accessor for default notification center object.
  */
 @property (readonly, weak, nonatomic) NSNotificationCenter *notificationCenter;
+
+/**
+ *  Convenience accessor for default user notification center object.
+ */
+@property (readonly, weak, nonatomic) UNUserNotificationCenter *userNotificationCenter;
 
 /**
  *  Convenience accessor for standard user defaults object.
