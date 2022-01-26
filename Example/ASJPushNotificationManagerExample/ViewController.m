@@ -16,7 +16,8 @@
 @property (readonly, weak, nonatomic) ASJPushNotificationManager *pushNotificationManager;
 
 - (void)setup;
-- (void)didReceivePushNotification:(NSNotification *)note;
+- (void)didReceiveSilentPushNotification:(NSNotification *)note;
+- (void)didReceiveVisiblePushNotification:(NSNotification *)note;
 - (IBAction)registerForPushNotifcations:(id)sender;
 
 @end
@@ -44,14 +45,30 @@
 
 - (void)setup
 {
-    [self.notificationCenter addObserver:self selector:@selector(didReceivePushNotification:) name:ASJPushReceivedNotification object:nil];
+    [self.notificationCenter addObserver:self selector:@selector(didReceiveSilentPushNotification:) name:ASJSilentPushReceivedNotification object:nil];
+    
+    [self.notificationCenter addObserver:self selector:@selector(didReceiveVisiblePushNotification:) name:ASJVisiblePushReceivedNotification object:nil];
 }
 
-- (void)didReceivePushNotification:(NSNotification *)note
+- (void)didReceiveSilentPushNotification:(NSNotification *)note
 {
-    NSString *description = [note.object description];
+    NSString *description = [note.userInfo description];
     
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Push received" message:description preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Silent Push received" message:description preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [alert addAction:ok];
+    
+    [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+        [self presentViewController:alert animated:YES completion:nil];
+    }];
+}
+
+- (void)didReceiveVisiblePushNotification:(NSNotification *)note
+{
+    NSString *description = [note.userInfo description];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Visible Push received" message:description preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction *ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
     [alert addAction:ok];
