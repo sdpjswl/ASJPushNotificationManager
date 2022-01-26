@@ -23,7 +23,7 @@ You need to import `ASJPushNotificationManager.h` in the class where you need to
 This class is a singleton and you are required to use its shared instance to access the defined properties and methods.
 
 ```objc
-- (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UIUserNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion;
+- (void)registerWithTypes:(ASJPushNotificationType)types categories:(nullable NSSet<UNNotificationCategory *> *)categories completion:(nullable CompletionBlock)completion;
 ```
 
 Call this method to invoke the registration flow. When called for the first time, it will prompt the user that the app would like to send push notifications. The completion block will fire after the user makes a choice, and you will receive the device token or error object.
@@ -47,10 +47,16 @@ To stop receiving pushes in app, you can unregister.
 Most of the delegate methods are abstracted away and **will not** be called even if you write them in `AppDelegate` (See below). You will need to observe `NSNotification`s for the different events you are interested in. Just be sure to remove your observers in `dealloc`:
 
 ```objc
-extern NSString *const ASJUserNotificationSettingsNotification;
+extern NSString *const ASJAuthorizationSuccessfulNotification;
 ```
 
-Posted when `application:didRegisterUserNotificationSettings:` is called.
+Posted when permissions are granted.
+
+```objc
+extern NSString *const ASJAuthorizationFailedNotification;
+```
+
+Posted when permissions are not granted.
 
 ```objc
 extern NSString *const ASJTokenErrorNotification;
@@ -65,36 +71,20 @@ extern NSString *const ASJTokenReceivedNotification;
 Notification posted when `application:didRegisterForRemoteNotificationsWithDeviceToken:` is called.
 
 ```objc
-extern NSString *const ASJPushReceivedNotification;
+extern NSString *const ASJSilentPushReceivedNotification;
 ```
 
-Notification posted when `application:didReceiveRemoteNotification:` is called.
-
-### Limitations
-
-I have used the notifications pattern so that the user could receive pushes in any `ViewController`, hoping it would be easier that way. However, I have been unable to make the methods with `completionHandler:` blocks work to my satisfaction. So for now, they will be called in `AppDelegate`. You **must** call the `completionHandler:` in these methods for them to work:
-
-**Called** in `AppDelegate`
+Notification posted when `application:didReceiveRemoteNotification:fetchCompletionHandler:` is called.
 
 ```objc
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler;
-
-- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void(^)())completionHandler;
-
-- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void(^)())completionHandler;
+extern NSString *const ASJVisiblePushReceivedNotification;
 ```
 
-**Not called** in `AppDelegate`
+Notification posted when `userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:` is called.
 
-```objc
-- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
+### Note
 
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
-
-- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo;
-```
+For methods that have `completionHandler`, you **must** call the block in these methods for them to work. The block will be received as part of the `NSNotification`'s `object`.
 
 # Credits
 
